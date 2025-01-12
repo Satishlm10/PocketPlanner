@@ -60,5 +60,6 @@ The site will be live at http://localhost:8000/
 ---
 
 ## Authors
-- Darshan K S
-- Siddarth Kotian
+- Satish Maharjan
+- Nija Tandukar
+- Nikhil Rayamajhi
