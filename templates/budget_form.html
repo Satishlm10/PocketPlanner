@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Budget Prediction{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Predict Your Monthly Expenses</h2>
+
+    <!-- Budget Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="monthly_budget">Monthly Budget:</label>
+            {{ form.monthly_budget }}
+        </div>
+        <div class="form-group">
+            <label for="saving_goal">Saving Goal:</label>
+            {{ form.saving_goal }}
+        </div>
+        <button type="submit" class="btn btn-success">Predict</button>
+    </form>
+
+    {% if predicted_expenses %}
+        <!-- Displaying Predicted Expenses in a Table -->
+        <h3 class="mt-4">Predicted Expenses:</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category, amount in predicted_expenses.items %}
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd; color: aliceblue;" >{{ category }}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; color: aliceblue;">{{ amount|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            <tr style="background-color: #f2f2f2;">
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Total</td>
+                <td style="padding: 8px; border: 1px solid #ddd; color: black; font-weight: bold;">{{ total_expenses|floatformat:2 }}</td>
+            </tr>
+            </tbody>
+        </table>s
+    {% endif %}
+</div>
+{% endblock %}

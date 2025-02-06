@@ -1,6 +1,6 @@
-# Expense Tracker
+# Pocket Planner
 
-Expense Tracker will help you track expense, show charts and statistics about your expenses.
+Pocket Planner will help you track expense, show charts and statistics about your expenses.
 
 ---
 

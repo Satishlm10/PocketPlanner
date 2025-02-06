@@ -26,3 +26,11 @@ class BudgetForm(forms.ModelForm):
         exclude = ["owner"]
 
         widgets = {"amount": forms.NumberInput(attrs={"class": "form-control"})}
+
+# forms.py
+from django import forms
+
+class BudgetFormPrediction(forms.Form):
+    monthly_budget = forms.FloatField(label="Enter Monthly Budget", min_value=0)
+    saving_goal = forms.FloatField(label="Enter Saving Goal", min_value=0)
+

@@ -20,77 +20,61 @@
     ></script>
 
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/\1.14.3/umd/popper.min.js"
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
       crossorigin="anonymous"
     ></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
 
     {% load static %}
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'expenses/style.css' %}"
-    />
+    <link rel="stylesheet" type="text/css" href="{% static 'expenses/style.css' %}">
+    <script type="text/javascript" src="{% static 'expenses/js/app.js' %}"></script>
 
-    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+    <title>{% block title %}Pocket Planner{% endblock title %}</title>
 
-    <title>{% block title %}Expense Tracker{% endblock title %}</title>
-  
   </head>
 
   <body>
 
-    <nav id="navbar" class="navbar justify-content-center">
-      <a
-        class="navbar-brand navbar-link font-weight-bold"
-        href="{% url 'expenses:home' %}"
-        >Expense Tracker</a
-      >
+    <nav id="navbar" class="navbar justify-content-between">
+      <a class="navbar-brand navbar-link font-weight-bold" href="{% url 'expenses:home' %}">Pocket Planner</a>
 
       <ul class="navbar-nav navbar-list flex-row justify-content-around">
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'expenses:home' %}"
-            >Home <span class="sr-only">(current)</span></a
-          >
+            <a class="nav-link" href="{% url 'expenses:home' %}">Home <span class="sr-only">(current)</span></a>
         </li>
-
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'expenses:charts' %}"
-            >Charts & Statistics</a
-          >
+            <a class="nav-link" href="{% url 'expenses:charts' %}">Charts & Statistics</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'expenses:budget_forecast' %}">Budget Forecast</a>
         </li>
       </ul>
+
+      <!-- Move the Generate PDF and Preview PDF buttons to the right -->
+      <div class="ml-auto d-flex">
+        <a class="nav-link btn btn-primary mr-2" href="{% url 'expenses:generate_pdf' %}">Generate PDF</a>
+        <a class="nav-link btn btn-secondary" href="{% url 'expenses:pdf_preview' %}">Preview PDF</a>
+      </div>
     </nav>
 
-    <div
-      id="user-greet"
-      class="user-greet font-weight-bold"
-      data-test="user-greet"
-    >
+    <div id="user-greet" class="user-greet font-weight-bold" data-test="user-greet">
 
       {% if user.is_authenticated %}
-    
-      <p>
-        Hi {{ user.username }}! |
-        <a href="{% url 'accounts:logout' %}" data-test="logout-link">Log Out</a>
-      </p>
-
+        <p>
+          Hi {{ user.username }}! |
+          <a href="{% url 'accounts:logout' %}" data-test="logout-link">Log Out</a>
+        </p>
       {% else %}
-      
-      <p>You are not logged in.</p>
-      <a href="{% url 'accounts:signup' %}">Sign Up</a> |
-      <a href="{% url 'accounts:login' %}" data-test="logout">Log In</a>
-      
+        <p>You are not logged in.</p>
+        <a href="{% url 'accounts:signup' %}">Sign Up</a> |
+        <a href="{% url 'accounts:login' %}" data-test="logout">Log In</a>
       {% endif %}
     </div>
 
     <div class="container" data-test="container">
-
       {% block content %} {% endblock content %}
-    
     </div>
 
   </body>

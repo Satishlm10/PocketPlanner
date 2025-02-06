@@ -222,3 +222,34 @@ class ExpenseGenerator:
                 days_to_add += 1
                 expenses.append(expense_data)
         return expenses
+
+
+# utils.py
+import joblib
+import numpy as np
+from pathlib import Path
+from django.conf import settings
+
+# Load the trained model
+def load_model():
+
+    category_models_path = Path(settings.BASE_DIR) / 'expenses' / 'ml_models' / 'x1.pkl'
+    print(f"Loading model from: {category_models_path}") 
+    print("SUCCESS")  # Specify the correct path to your pkl file
+    model = joblib.load(category_models_path)
+    print("Modal loded")
+    return model
+
+# Make a prediction based on the input data
+def predict_expenses_utils(monthly_budget, saving_goal):
+    model = load_model()
+    # Prepare input data for prediction (assuming 2 input features)
+    input_data = np.array([[monthly_budget, saving_goal]])
+    prediction = model.predict(input_data)
+    
+    # Return the predicted expenses for each category
+    # The output should be a dictionary of category: amount
+    categories = ['Food', 'Electronics', 'Online Shopping', 'Monthly Bill', 'Groceries', 'Transport', 'Housing', 'Miscellaneous']
+    predicted_expenses = dict(zip(categories, prediction[0]))
+    
+    return predicted_expenses

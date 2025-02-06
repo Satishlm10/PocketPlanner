@@ -93,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'apple',
         'USER': 'root',
-        'PASSWORD': 'S.mhrjn@lm10',
+        'PASSWORD': '',
         "HOST": 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -142,11 +142,11 @@ USE_TZ = False
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATIC_URL = "/static/"
+STATIC_URL = "/staticfiles/"
 
 LOGIN_REDIRECT_URL = "expenses:home"
 

@@ -4,10 +4,255 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import JsonResponse
-import json
+from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
+from django.db.models import Sum
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 from .models import Budget, Expense
-from .forms import BudgetForm, ExpenseForm
+from .forms import BudgetForm, ExpenseForm, BudgetFormPrediction
+
+
+
+@login_required
+def generate_pdf(request):
+    # Create the HTTP response with PDF content type
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="expense_report.pdf"'
+
+    # Create a PDF object using ReportLab
+    p = canvas.Canvas(response, pagesize=letter)
+
+    # Add title and introductory text
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, 750, "Expense Report")
+    p.setFont("Helvetica", 12)
+    p.drawString(100, 730, f"Generated on: {timezone.now().strftime('%Y-%m-%d')}")
+
+    # Fetch user-specific expenses
+    user = request.user
+    expenses = Expense.objects.filter(owner=user).order_by('date')
+
+    # Add column headers for the table
+    p.drawString(100, 700, "Date")
+    p.drawString(200, 700, "Amount")
+    p.drawString(300, 700, "Category")
+    p.drawString(400, 700, "Source")
+
+    # Set position for data rows
+    y_position = 680
+
+    # Add expense data rows to the PDF
+    for expense in expenses:
+        p.drawString(100, y_position, expense.get_date_without_time())  # Date without time
+        p.drawString(200, y_position, f"${expense.amount:,.2f}")  # Format as currency
+        p.drawString(300, y_position, expense.category)  # Category
+        p.drawString(400, y_position, expense.source)  # Source
+        y_position -= 20
+
+        # Prevent text from going off the page
+        if y_position < 50:
+            p.showPage()
+            p.setFont("Helvetica", 12)
+            y_position = 750
+            p.drawString(100, y_position, "Date")
+            p.drawString(200, y_position, "Amount")
+            p.drawString(300, y_position, "Category")
+            p.drawString(400, y_position, "Source")
+            y_position -= 20
+
+    # Add summary statistics
+    total_expenses = Expense.objects.filter(owner=user).aggregate(Sum('amount'))['amount__sum'] or 0
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(100, y_position - 20, f"Total Expenses: ${total_expenses:,.2f}")
+    y_position -= 20
+
+    max_expense = Expense.objects.filter(owner=user).order_by('-amount').first()
+    if max_expense:
+        p.drawString(100, y_position - 20, f"Max Expense: {max_expense.content} - ${max_expense.amount:,.2f}")
+    else:
+        p.drawString(100, y_position - 20, "Max Expense: No expenses recorded")
+
+    y_position -= 40
+    min_expense = Expense.objects.filter(owner=user).order_by('amount').first()
+    if min_expense:
+        p.drawString(100, y_position - 20, f"Min Expense: {min_expense.content} - ${min_expense.amount:,.2f}")
+    else:
+        p.drawString(100, y_position - 20, "Min Expense: No expenses recorded")
+
+    # End the page and save the PDF
+    p.showPage()
+    p.save()
+
+    return response
+
+
+@login_required
+def pdf_preview(request):
+    # Create a buffer to hold the PDF content
+    buffer = BytesIO()
+
+    # Create the PDF object using ReportLab
+    p = canvas.Canvas(buffer, pagesize=letter)
+
+    # Add title and introductory text
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, 750, "Expense Report Preview")
+    p.setFont("Helvetica", 12)
+    p.drawString(100, 730, f"Generated on: {timezone.now().strftime('%Y-%m-%d')}")
+
+    # Fetch user-specific expenses
+    user = request.user
+    expenses = Expense.objects.filter(owner=user).order_by('date')
+
+    # Add column headers for the table
+    p.drawString(100, 700, "Date")
+    p.drawString(200, 700, "Amount")
+    p.drawString(300, 700, "Category")
+    p.drawString(400, 700, "Source")
+
+    # Set position for data rows
+    y_position = 680
+
+    # Add expense data rows to the PDF
+    for expense in expenses:
+        p.drawString(100, y_position, expense.get_date_without_time())  # Date without time
+        p.drawString(200, y_position, f"${expense.amount:,.2f}")  # Format as currency
+        p.drawString(300, y_position, expense.category)  # Category
+        p.drawString(400, y_position, expense.source)  # Source
+        y_position -= 20
+
+        # Prevent text from going off the page
+        if y_position < 50:
+            p.showPage()
+            p.setFont("Helvetica", 12)
+            y_position = 750
+            p.drawString(100, y_position, "Date")
+            p.drawString(200, y_position, "Amount")
+            p.drawString(300, y_position, "Category")
+            p.drawString(400, y_position, "Source")
+            y_position -= 20
+
+    # Add summary statistics
+    total_expenses = Expense.objects.filter(owner=user).aggregate(Sum('amount'))['amount__sum'] or 0
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(100, y_position - 20, f"Total Expenses: ${total_expenses:,.2f}")
+    y_position -= 20
+
+    max_expense = Expense.objects.filter(owner=user).order_by('-amount').first()
+    if max_expense:
+        p.drawString(100, y_position - 20, f"Max Expense: {max_expense.content} - ${max_expense.amount:,.2f}")
+    else:
+        p.drawString(100, y_position - 20, "Max Expense: No expenses recorded")
+
+    y_position -= 40
+    min_expense = Expense.objects.filter(owner=user).order_by('amount').first()
+    if min_expense:
+        p.drawString(100, y_position - 20, f"Min Expense: {min_expense.content} - ${min_expense.amount:,.2f}")
+    else:
+        p.drawString(100, y_position - 20, "Min Expense: No expenses recorded")
+
+    # End the page and save the PDF content to the buffer
+    p.showPage()
+    p.save()
+
+    # Get the buffer content
+    buffer.seek(0)
+
+    # Return the buffer content as a response (display it in the browser)
+    return HttpResponse(buffer.getvalue(), content_type='application/pdf')
+
+
+
+
+
+from django.shortcuts import render
+from .forms import BudgetFormPrediction
+from .utils import predict_expenses_utils
+
+@login_required
+def predict_expenses(request):
+    predicted_expenses = {}
+    total_expenses = 0
+    form = BudgetFormPrediction()
+
+    if request.method == "POST":
+        form = BudgetFormPrediction(request.POST)
+        if form.is_valid():
+            # Get input values from the form
+            monthly_budget = form.cleaned_data['monthly_budget']
+            saving_goal = form.cleaned_data['saving_goal']
+            print(monthly_budget)
+            # Get the predicted expenses based on the input
+            predicted_expenses = predict_expenses_utils(monthly_budget, saving_goal)
+
+            total_expenses = sum(predicted_expenses.values())
+            print(predict_expenses)
+    else:
+        form = BudgetFormPrediction()  # Create an empty form for GET request
+
+    return render(request, "budget_form.html", {
+        "form": form,
+        "predicted_expenses": predicted_expenses,
+        'total_expenses': total_expenses
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @login_required

@@ -37,5 +37,7 @@ urlpatterns = [
         views.expenses_by_week_bar_chart_data,
         name="expenses_by_week_bar_chart_data",
     ),
-    
+    path('budget-forecast/', views.predict_expenses, name='budget_forecast'),
+    path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
+    path('preview_pdf/', views.pdf_preview, name='pdf_preview'),
 ]
