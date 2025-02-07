@@ -4,19 +4,13 @@ Pocket Planner will help you track expense, show charts and statistics about you
 
 ---
 
-![Homepage](https://github.com/darshan-k-s/financial-tracker/blob/acd56dea015565551678c26999ead5ff8ae95e47/demo/homePage.jpeg)
+![Homepage]
+![Charts&Statistics_page]
+![ExpensePrediction_page]
 
 ## Installation
-
-For installing the Django application, clone the repository and run:
-
-     pipenv install
-
-This will install the virtual environments and all dependencies.
-
-Then start the virtual environment:
-
-     pipenv shell
+Clone repository:
+    git clone https://github.com/Satishlm10/PocketPlanner.git
 
 Run migrations:
 
@@ -44,15 +38,16 @@ The site will be live at http://localhost:8000/
 - Form validation.
 - Authentication.
 - Pagination.
+- Linear Regression for prediciting expenses for each category. 
 
 ---
 
-![Statistics page](https://github.com/darshan-k-s/financial-tracker/blob/acd56dea015565551678c26999ead5ff8ae95e47/demo/statsPage.jpeg)
+
 
 ---
 
 ## Stack used
-
+- Python.
 - Django.
 - Postgres.
 - Chart.js.
@@ -62,4 +57,4 @@ The site will be live at http://localhost:8000/
 ## Authors
 - Satish Maharjan
 - Nija Tandukar
-- Nikhil Rayamajhi
+- Nikhil Singha Rayamajhi

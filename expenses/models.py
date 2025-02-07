@@ -9,6 +9,7 @@ from expenses import utils
 
 
 class ExpenseManager(models.Manager):
+    
     def addTestuserExpenses(self, request):
         if str(request.user) == "testuser1":
             test_userExpenses = Expense.objects.filter(owner=request.user)
