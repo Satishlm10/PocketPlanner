@@ -1,5 +1,4 @@
 from expenses import utils
-
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.auth.models import User
@@ -12,9 +11,9 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from .models import Budget, Expense
 from .forms import BudgetForm, ExpenseForm, BudgetFormPrediction
+from .utils import predict_expenses_utils
 
-
-
+#
 @login_required
 def generate_pdf(request):
     # Create the HTTP response with PDF content type
@@ -164,13 +163,6 @@ def pdf_preview(request):
     return HttpResponse(buffer.getvalue(), content_type='application/pdf')
 
 
-
-
-
-from django.shortcuts import render
-from .forms import BudgetFormPrediction
-from .utils import predict_expenses_utils
-
 @login_required
 def predict_expenses(request):
     predicted_expenses = {}
@@ -197,62 +189,6 @@ def predict_expenses(request):
         "predicted_expenses": predicted_expenses,
         'total_expenses': total_expenses
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @login_required
@@ -417,8 +353,6 @@ def createBudget(request):
     return render(request, template, context)
 
 
-
-
 @login_required
 def deleteBudget(request):
     template = "deleteBudget.html"
@@ -462,7 +396,6 @@ def line_chart_data(request):
     return JsonResponse(chart_data)
 
 
-
 @login_required
 def view_404(request, exception):
     template = "errors/404.html"
@@ -473,8 +406,6 @@ def view_404(request, exception):
 def view_500(request):
     template = "errors/500.html"
     return render(request, template, {})
-
-
 
 
 @login_required
@@ -579,5 +510,3 @@ def addTestuserData(request):
 
         Expense.objects.createTestExpenses(request.user, expenses)
         return redirect("expenses:home")
-
-

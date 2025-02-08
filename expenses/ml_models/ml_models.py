@@ -27,7 +27,7 @@ X_scaled = np.c_[np.ones(X_scaled.shape[0]), X_scaled]
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
 # Linear Regression Model (Gradient Descent)
-class LinearRegressionScratch:
+class LinearRegressionModel:
     def __init__(self, learning_rate=0.001, iterations=500000, alpha=0.1):
         self.learning_rate = learning_rate
         self.iterations = iterations
@@ -58,7 +58,7 @@ class LinearRegressionScratch:
         return X.dot(self.theta)
 
 # Initialize the model with a smaller learning rate and L2 regularization
-model = LinearRegressionScratch(learning_rate=0.0001, iterations=500000, alpha=0.1)
+model = LinearRegressionModel(learning_rate=0.0001, iterations=500000, alpha=0.1)
 
 # Train the model
 model.fit(X_train, y_train)

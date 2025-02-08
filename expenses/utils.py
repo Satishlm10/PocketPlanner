@@ -1,7 +1,12 @@
-from django.db.models import Sum
 from datetime import date, datetime, timedelta
+from pathlib import Path
 import json
+import numpy as np
+import joblib
 from dateutil.relativedelta import relativedelta
+from django.db.models import Sum
+from django.conf import settings
+
 
 def get_data_from_json(file):
     with open(file) as f:
@@ -78,7 +83,6 @@ def get_months_list():
         "November",
         "December",
     ]
-
 
 
 def get_yearly_month_expense_data(year, userExpenses):
@@ -222,13 +226,7 @@ class ExpenseGenerator:
                 days_to_add += 1
                 expenses.append(expense_data)
         return expenses
-
-
-# utils.py
-import joblib
-import numpy as np
-from pathlib import Path
-from django.conf import settings
+    
 
 # Load the trained model
 def load_model():

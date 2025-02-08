@@ -27,8 +27,6 @@ class BudgetForm(forms.ModelForm):
 
         widgets = {"amount": forms.NumberInput(attrs={"class": "form-control"})}
 
-# forms.py
-from django import forms
 
 class BudgetFormPrediction(forms.Form):
     monthly_budget = forms.FloatField(label="Enter Monthly Budget", min_value=0)
