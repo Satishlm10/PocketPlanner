@@ -4,9 +4,11 @@ Pocket Planner will help you track expense, show charts and statistics about you
 
 ---
 
-![Homepage]
-![Charts&Statistics_page]
-![ExpensePrediction_page]
+![homepage](https://github.com/user-attachments/assets/f6243da1-41e0-4b3c-b3ff-e44089cb147a)
+![charts statisticspage](https://github.com/user-attachments/assets/45600e26-d4b5-4b7d-9712-c377e20d1fd1)
+![budgetprediction](https://github.com/user-attachments/assets/9d142666-a514-413f-a85c-51dcd6129709)
+
+
 
 ## Installation
 Clone repository:
